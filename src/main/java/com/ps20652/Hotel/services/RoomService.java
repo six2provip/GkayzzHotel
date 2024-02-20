@@ -19,7 +19,7 @@ public interface RoomService {
 
 	public Room create(RoomDTO roomDTO,  List<MultipartFile> roomImages) ;
 
-    Room update(Room room);
+    Room update(Long roomId, RoomDTO roomDTO, List<MultipartFile> roomImages);
 
 } 
     

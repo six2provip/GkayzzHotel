@@ -20,6 +20,7 @@ public class RoomDTO {
     private List<MultipartFile> roomImages;
     private Integer roomNumber;
     private Long roomType;
+    private String status;
     private BigDecimal price;
 
     

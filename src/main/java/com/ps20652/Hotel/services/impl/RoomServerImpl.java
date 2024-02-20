@@ -10,6 +10,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -155,9 +157,51 @@ public class RoomServerImpl implements RoomService {
     
     
 
+    // @Override
+    // public Room update(Room room) {
+    //     return roomDAO.save(room);
+    // }
+
     @Override
-    public Room update(Room room) {
-        return roomDAO.save(room);
+    public Room update(Long roomId, RoomDTO roomDTO, List<MultipartFile> roomImages) {
+        // Tìm phòng cần cập nhật
+        Room roomToUpdate = roomDAO.findById(roomId).orElse(null);
+        if (roomToUpdate == null) {
+            throw new EntityNotFoundException("Không tìm thấy phòng với ID: " + roomId);
+        }
+
+        // Cập nhật thông tin của phòng từ roomDTO
+        roomToUpdate.setRoomNumber(roomDTO.getRoomNumber());
+        roomToUpdate.setPrice(roomDTO.getPrice());
+        roomToUpdate.setStatus(roomDTO.getStatus());
+        RoomType type = roomTypeService.findbyId(roomDTO.getRoomType());
+        roomToUpdate.setRoomType(type);
+
+        // Cập nhật hình ảnh nếu có
+        Room updatedRoom = roomDAO.save(roomToUpdate);
+        
+                // Kiểm tra và lưu trữ hình ảnh
+                if (roomImages != null && !roomImages.isEmpty()) {
+                    List<RoomImage> roomImageList = new ArrayList<>();
+    
+                    for (MultipartFile image : roomImages) {
+                        String imageUrl = saveImage(image);
+    
+                        // Tạo đối tượng RoomImage
+                        RoomImage roomImage = new RoomImage();
+                        roomImage.setRoom(updatedRoom);
+                        roomImage.setImageUrl(imageUrl);
+    
+                        // Thêm vào danh sách hình ảnh của phòng
+                        roomImageList.add(roomImage);
+                    }
+    
+                    // Thêm danh sách hình ảnh vào phòng và lưu lại phòng để cập nhật danh sách hình ảnh
+                    updatedRoom.getRoomImages().addAll(roomImageList);
+                    updatedRoom = roomDAO.save(updatedRoom);
+                }
+
+        return updatedRoom;
     }
 
 }

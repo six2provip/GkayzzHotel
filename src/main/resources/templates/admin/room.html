@@ -508,6 +508,72 @@
         }
     });
 });
+$(document).on('submit', 'form[id^="editRoomForm"]', function(event) {
+    event.preventDefault(); // Ngăn chặn việc gửi form theo cách truyền thống
+
+    var form = $(this); // Chọn form hiện tại được submit
+    var roomId = form.find('.editRoomId').val(); // Lấy roomId từ trường ẩn trong form
+    var updatedRoom = { 
+        // Tạo đối tượng updatedRoom từ các giá trị trong form
+        roomNumber: form.find('.editRoomNumber').val(),
+        price: form.find('.editPrice').val(),
+        status: form.find('.editStatus').val(),
+        roomType: {
+            typeId: form.find('.editRoomTypeSelect').val()
+        }
+    };
+    form.find('.editRoomImagesInput' + roomId).on('change', function (e) {
+    var imagesContainer = form.find('.editRoomImagesContainer' + roomId);
+    imagesContainer.empty(); // Xóa hình ảnh cũ trước khi thêm hình ảnh mới
+
+    var files = e.target.files;
+    for (var i = 0; i < files.length; i++) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            imagesContainer.append('<img style="width:100px;height:100px;" class="img-thumbnail m-2" src="' + e.target.result + '" alt="Room Image">');
+        }
+        reader.readAsDataURL(files[i]);
+    }
+});
+
+    // Gửi request PUT đến API
+    $.ajax({
+        url: '/api/room/' + roomId,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(updatedRoom),
+        success: function(response) {
+            // Xử lý khi cập nhật thành công
+            console.log('Room updated successfully:', response);
+            form.closest('.modal').modal('hide'); // Đóng modal sau khi cập nhật thành công
+            // Thực hiện các hành động khác (nếu cần)
+            successTitle.textContent = 'Tạo phòng thành công!';
+                                        successContent.textContent = 'Phòng ' + form.find('.editRoomNumber').val() +
+                                            ' đã cập nhật thành công';
+                                        successMessage.classList.add('active');
+                                        successMessage.classList.remove('d-none');
+                                        setTimeout(function () {
+                                            successMessage.classList.remove(
+                                                'active');
+                                        }, 3000);
+
+                                        setTimeout(function () {
+                                            successMessage.classList.add('d-none');
+                                        }, 3500);
+
+                                        // Sau khi tạo thành công, lấy và hiển thị các phòng đã cập nhật
+
+                                        getAndDisplayRooms(currentPage);
+        },
+        error: function(xhr, status, error) {
+            // Xử lý khi có lỗi xảy ra
+            console.error('Failed to update room:', error);
+            // Hiển thị thông báo lỗi cho người dùng (nếu cần)
+        }
+    });
+});
+
+
 
 
 
@@ -518,6 +584,7 @@
 
                                 // Loop through the list of rooms and add information to the web page
                                 $.each(rooms, function (index, room) {
+                                    var editModalId = "editModal" + room.roomId;
                                     var backgroundColor = room.status === 'Còn phòng' ? '#ADDDCE' : room
                                         .status === 'Hết phòng' ? '#ffcccc' : '';
                                  
@@ -536,7 +603,7 @@
                 <button style="width:50%;border-radius: 1px; " class="btn btn-danger btn-sm delete-room" data-room-id="${room.roomId}">
                 <i class="fas fa-trash-alt"></i>
             </button>
-            <button style="width:50%;border-radius: 1px; " class="btn btn-primary btn-sm edit-room" data-bs-toggle="modal" data-bs-target="#editModal${room.roomId}" data-room-id="${room.roomId}" data-bs-whatever="@mdo">
+            <button style="width:50%;border-radius: 1px; " class="btn btn-primary btn-sm edit-room" data-bs-toggle="modal" data-bs-target="#${editModalId}" data-room-id="${room.roomId}" data-bs-whatever="@mdo">
                 <i class="fas fa-edit"></i>
             </button>
             </div>
@@ -553,7 +620,7 @@
 
 
 
-            <div class="modal fade" id="editModal${room.roomId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="${editModalId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-warning text-white">
@@ -561,8 +628,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editRoomForm" method="post" enctype="multipart/form-data">
-                    <input type="hidden" class="editRoomId" id="editRoomId" name="editRoomId">
+                <form id="editRoomForm" method="put" enctype="multipart/form-data">
+                    <input type="text" class="editRoomId" id="editRoomId" name="editRoomId">
                     <div class="mb-3 row">
                         <label for="editRoomNumber" class="col-sm-2 col-form-label">Phòng</label>
                         <div class="col-sm-10">

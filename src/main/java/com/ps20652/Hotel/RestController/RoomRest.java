@@ -73,14 +73,20 @@ public class RoomRest {
 
     // Update a room
     @PutMapping("/{roomId}")
-    public ResponseEntity<Room> updateRoom(@PathVariable Long roomId, @RequestBody Room updatedRoom) {
-        Room room = roomService.findbyId(roomId);
-        if (room != null) {
-            updatedRoom.setRoomId(roomId);
-            Room savedRoom = roomService.update(updatedRoom);
-            return new ResponseEntity<>(savedRoom, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> updateRoom(
+        @PathVariable Long roomId,
+        @ModelAttribute RoomDTO roomDTO,
+        @RequestPart(value = "roomImages", required = false) List<MultipartFile> roomImages
+    ) {
+        try {
+            Room updatedRoom = roomService.update(roomId, roomDTO, roomImages);
+            return ResponseEntity.ok(updatedRoom);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Xử lý ngoại lệ và trả về phản hồi phù hợp
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Không thể cập nhật phòng. Vui lòng thử lại sau.");
         }
     }
+    
 }
