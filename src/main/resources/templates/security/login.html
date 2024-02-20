@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-ez0t76sCQm1/9z1CAwCjkDh+2vD5JS3PIj16hgb02aJPp5Cq5F96p4gr7SHVfPSw" crossorigin="anonymous">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <title>Gkayz Hotel | Trang chính thức</title>
+    <link rel="icon" href="assets/images/single-property.jpg">
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <link rel="stylesheet" href="assets/css/templatemo-villa-agency.css">
+    <link rel="stylesheet" href="assets/css/owl.css">
+    <link rel="stylesheet" href="assets/css/animate.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+
+    <!-- Custom CSS for Login Form -->
+    <style>
+
+/* CSS để ẩn thông báo lỗi khi ban đầu và áp dụng hiệu ứng transition opacity */
+
+
+   /* CSS cho nút đăng nhập Facebook */
+.facebook-button {
+    background-color: #4267B2;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    padding: 15px;
+    
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.facebook-button:hover {
+    background-color: #385998;
+}
+
+.facebook-icon {
+    margin-right: 10px;
+}
+
+.facebook-icon i {
+    font-size: 20px;
+    color: #fff;
+}
+
+/* CSS cho nút đăng nhập Google */
+.google-button {
+    background-color: #DD4B39;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 18px;
+    transition: background-color 0.3s ease-in-out;
+    margin-top: 30px;
+}
+
+.google-button:hover {
+    background-color: #C23321;
+}
+
+.google-icon {
+    margin-right: 10px;
+}
+
+.google-icon i {
+    font-size: 20px;
+    color: #fff;
+}
+
+
+
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #ffffff;
+        }
+
+        .login-container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card img {
+            border-radius: 1rem 0 0 1rem;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 4rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo-container i {
+            color: #ff6219;
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+
+        .logo-container span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+
+        .login-heading {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-outline {
+            margin-bottom: 20px;
+        }
+
+        .btn-login {
+            background-color: #3498db;
+            color: #fff;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-login:hover {
+            background-color: #007bb5;
+        }
+
+        .small-link {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .small-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Kiểm tra nếu có tham số success=true trong URL
+    const urlParams = new URLSearchParams(window.location.search);
+    var successMessage = document.getElementById('success-message');
+    var successTitle = document.getElementById('success-title');
+    var successContent = document.getElementById('success-content');
+    var errorMessage = document.getElementById('error-message');
+    var errorTitle = document.getElementById('error-title');
+    var errorContent = document.getElementById('error-content');
+
+    const successParam = urlParams.get('success');
+
+    if (successParam === 'true') {
+      // Hiển thị thông báo đăng nhập thành công
+      // Thay đổi từ errorTitle sang successTitle
+      successTitle.textContent = 'Đăng Ký thành công!';
+      // Thay đổi từ errorContent sang successContent
+      successContent.textContent = 'Vui lòng đăng nhập.';
+      // Thay đổi từ errorMessage sang successMessage
+      successMessage.classList.add('active');
+      successMessage.classList.remove('d-none');
+
+                setTimeout(function () {
+                    successMessage.classList.remove('active');
+                }, 3000);
+
+                setTimeout(function () {
+                    successMessage.classList.add('d-none');
+                }, 3500);
+
+
+      // Xóa tham số success=true khỏi URL để tránh hiển thị lại khi làm mới trang
+      history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    if (successParam === 'false') {
+      // Hiển thị thông báo đăng nhập thành công
+      // Thay đổi từ errorTitle sang successTitle
+      errorTitle.textContent = 'Đăng nhập thất bại!';
+      // Thay đổi từ errorContent sang successContent
+      errorContent.textContent = 'Kiểm tra lại tài khoản và mật khẩu.';
+      // Thay đổi từ errorMessage sang successMessage
+      errorMessage.classList.add('active');
+      errorMessage.classList.remove('d-none');
+
+                setTimeout(function () {
+                    errorMessage.classList.remove('active');
+                }, 3000);
+
+                setTimeout(function () {
+                    errorMessage.classList.add('d-none');
+                }, 3500);
+
+
+      // Xóa tham số success=true khỏi URL để tránh hiển thị lại khi làm mới trang
+      history.replaceState({}, document.title, window.location.pathname);
+    }
+
+  });
+
+
+ 
+
+
+
+
+</script>
+</head>
+
+<body>
+
+
+
+    <!-- ***** Preloader Start ***** -->
+    <div id="js-preloader" class="js-preloader">
+        <div class="preloader-inner">
+            <span class="dot"></span>
+            <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+
+    <div id="success-message" class="alert alert-success d-none" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-check-circle mr-2"></i>
+          <div>
+            <h5 style="color: #148525;" id="success-title" class="mb-1"></h5>
+            <p style="font-size: 16px;  font-weight: bold;" id="success-content" class="mb-0"></p>
+          </div>
+        </div>
+      </div>
+<div id="error-message" class="alert alert-danger d-none" role="alert">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-exclamation-triangle mr-2"></i> <!-- Thêm icon cho thông báo -->
+        <div>
+            <h5 style="color: #d52727;" class="mb-1" id="error-title"></h5> <!-- Tiêu đề thông báo -->
+            <p style="font-size: 16px;  font-weight: bold;" class="mb-0r"  id="error-content"></p> <!-- Nội dung thông báo -->
+        </div>
+    </div>
+</div>
+
+
+
+    <th:block th:include="fragments/sub-header"></th:block>
+
+    <!-- ***** Header Area Start ***** -->
+    <th:block th:include="fragments/header"></th:block>
+
+    <!-- Form Login -->
+    <section class="vh-100">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-xl-10">
+                    <div class="card">
+                        <div class="row g-0">
+                            <div class="col-md-6 col-lg-5 d-none d-md-block">
+                                <img src="https://23c133e0c1637be1e07d-be55c16c6d91e6ac40d594f7e280b390.ssl.cf1.rackcdn.com/u/gpch/Park-Hotel-Group---Explore---Grand-Park-City-Hall-Facade.jpg"
+                                    alt="login form" class="img-fluid" />
+                            </div>
+                            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                                <div class="card-body">
+                                    <div class="logo-container">
+                                        <i class="fas fa-cubes"></i>
+                                        <span>GkayzHotel</span>
+                                    </div>
+
+                                    <h5 class="login-heading">Đăng nhập tài khoản</h5>
+
+                                    <form th:action="@{/login}" method="post">
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form2Example17">Tên đăng nhập</label>
+                                            <input required type="text" name="username" id="username" class="form-control form-control-lg" />
+                                            
+                                        </div>
+
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="form2Example27">Mật khẩu</label>
+                                            <input required type="password" name="password" id="password" class="form-control form-control-lg" />
+                                            
+                                        </div>
+
+                                        <!-- Thêm một div để hiển thị thông báo lỗi -->
+                                 
+
+
+
+                                        <div class="pt-1 mb-4">
+                                            <button  class="btn btn-dark btn-lg btn-block" type="submit">Đăng nhập</button>
+                                        </div>
+
+                                    <p  style="color: #393f81;" >  Quên mật khẩu?  <a class="small-link" href="/forgot-password"> Nhấp vào đây</a></p>
+                                        <p class="mb-5 pb-lg-2" style="color: #393f81;">Không có tài khoản?
+                                            <a href="/register" class="small-link">Đăng ký ngay!</a>
+                                        </p>
+                                    </form>
+                                    <!-- <div class="pt-3 mb-4">
+                                        <a th:href="@{/login/facebook}" class="btn btn-primary btn-lg btn-block facebook-button">
+                                            <span class="facebook-icon"><i class="fab fa-facebook-f"></i></span>
+                                            Login with Facebook
+                                        </a>
+                                    </div> -->
+
+                                    <!-- <form action="/signin/facebook" method="POST">
+                                        <input type="hidden" name="scope" value="public_profile" />
+                                        <input type="submit" value="Login using Facebook"/>
+                                    </form> -->
+                                    <a th:href="@{/oauth2/authorization/facebook}" class="btn btn-primary btn-lg btn-block facebook-button">
+                                        <span class="facebook-icon"><i class="fab fa-facebook-f"></i></span>
+                                        Đăng nhập bằng Facebook
+                                    </a>
+                                    
+                                    <!-- Nút đăng nhập Google -->
+                                    <a th:href="@{/oauth2/authorization/google}" class="btn btn-danger btn-lg btn-block google-button">
+                                        <span class="google-icon"><i class="fab fa-google"></i></span>
+                                        Đăng nhập bằng Google
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Form Login -->
+
+    <th:block th:include="fragments/footer"></th:block>
+
+    <!-- Scripts -->
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/isotope.min.js"></script>
+    <script src="assets/js/owl-carousel.js"></script>
+    <script src="assets/js/counter.js"></script>
+    <script src="assets/js/custom.js"></script>
+
+</body>
+
+</html>

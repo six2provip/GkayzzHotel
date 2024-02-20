@@ -1,0 +1,61 @@
+<!-- _header.html -->
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="/" class="logo">
+                        <h1>Gkayz</h1>
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="properties">Properties</a></li>
+                        <li><a href="property-details">Property Details</a></li>
+                        <li><a href="contact" class="">Contact Us</a></li>
+                        <li class="user-dropdown">
+                            <a href="#" class="user-icon" id="userDropdown">
+                                <i class="fa fa-user"></i>
+                            </a>
+                            <div class="user-dropdown-content" id="userDropdownContent">
+                                <ul th:unless="${username}">
+                                    <li><a style="font-size: 13px; color: black;" href="/login">Đăng Nhập</a></li>
+                                    <li><a style="font-size: 13px; color: black;" href="/register">Đăng Ký</a></li>
+                                </ul>
+                          
+                                
+
+                                
+                                <ul sec:authorize="hasRole('NULL')" th:if="${username}" >
+                                    <li><a style="font-size: 13px; color: black;" href="/verify">Liên kết tài khoản</a></li>
+                                    <li><a style="font-size: 13px; color: black;" th:href="@{/logout}">Đăng xuất</a></li>
+                                </ul>
+                               
+                               
+                                <ul sec:authorize="hasRole('customer')" th:if="${username}">
+                                    <li><a style="font-size: 13px; color: black;" href="/profile">Thông tin cá nhân</a></li>
+                                    <li><a style="font-size: 13px; color: black;" th:href="@{/logout}">Đăng xuất</a></li>
+                                </ul>
+
+                                <ul sec:authorize="hasRole('employee')" th:if="${username}">
+                                    <li><a style="font-size: 13px; color: black;" href="/profile">Thông tin cá nhân</a></li>
+                                    <li><a style="font-size: 13px; color: black;" href="/admin/dashboard">Quản lý</a></li>
+                                    <li><a style="font-size: 13px; color: black;" th:href="@{/logout}">Đăng xuất</a></li>
+                                </ul>
+
+                                <ul sec:authorize="hasRole('admin')" th:if="${username}">
+                                    <li><a style="font-size: 13px; color: black;" href="/admin/dashboard">Quản lý</a></li>
+                                    <li><a style="font-size: 13px; color: black;" th:href="@{/logout}">Đăng xuất</a></li>
+                                </ul>
+
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
