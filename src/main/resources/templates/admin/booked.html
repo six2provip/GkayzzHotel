@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Cards</title>
+    <title>SB Admin 2 - Color Utilities</title>
 
     <!-- Custom fonts for this template-->
     <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -43,7 +43,7 @@
         
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="/admin/dashboard">
+                <a class="nav-link collapsed" href="/admin/dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Bảng thống kê</span></a>
             </li>
@@ -55,17 +55,17 @@
             
         
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item active">
-                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+                aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Quản lý phòng</span>
                 </a>
-                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Phòng:</h6>
                         <a class="collapse-item" href="/admin/room">Thêm Phòng</a>
-                        <a class="collapse-item active" href="/admin/type-room">Loại phòng</a>
+                        <a class="collapse-item" href="/admin/type-room">Loại phòng</a>
                     </div>
                 </div>
             </li>
@@ -83,7 +83,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>Quản lý dịch vụ</span>
+                    <span>Quản lý dịch vụ</span>   
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
@@ -104,22 +104,22 @@
            
          
              <!-- Nav Item - Pages Collapse Menu -->
-             <li class="nav-item">
-                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages3"
+             <li class="nav-item active">
+                 <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages3"
                      aria-expanded="true" aria-controls="collapsePages">
                      <i class="fas fa-fw fa-table"></i>
                      <span>Quản lý Booking</span>
                  </a>
-                 <div id="collapsePages3" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                 <div id="collapsePages3" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                      <div class="bg-white py-2 collapse-inner rounded">
                          <h6 class="collapse-header">Booking</h6>
                          <a class="collapse-item" href="/admin/booking">Đang Booking</a>
-                         <a class="collapse-item" href="/admin/booked">Đã Booking</a>
+                         <a class="collapse-item active" href="/admin/booked">Đã Booking</a>
                      </div>
                  </div>
              </li>
         
-             <li class="nav-item">
+             <li class="nav-item ">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages5"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-table"></i>
@@ -382,7 +382,8 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-               
+                 
+
                 </div>
                 <!-- /.container-fluid -->
 
@@ -398,6 +399,7 @@
                 </div>
             </footer>
             <!-- End of Footer -->
+
 
         </div>
         <!-- End of Content Wrapper -->

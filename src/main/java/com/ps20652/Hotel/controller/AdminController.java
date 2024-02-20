@@ -48,4 +48,35 @@ public class AdminController {
 	
 		return "admin/booking";
 	}
+	@GetMapping("/booked")
+	public String admin7() {
+	
+		return "admin/booked";
+	}
+
+	@GetMapping("/customer")
+	public String admin6() {
+	
+		return "admin/customer";
+	}
+	@GetMapping("/employee")
+	public String admin8() {
+	
+		return "admin/employee";
+	}
+	@GetMapping("/schedule")
+	public String admin9() {
+	
+		return "admin/schedule";
+	}
+	@GetMapping("/timekeeping")
+	public String admin10() {
+	
+		return "admin/timekeeping";
+	}
+	@GetMapping("/salary")
+	public String admin11() {
+	
+		return "admin/salary";
+	}
 }
