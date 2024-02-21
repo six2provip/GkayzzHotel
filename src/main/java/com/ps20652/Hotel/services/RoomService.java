@@ -21,5 +21,10 @@ public interface RoomService {
 
     Room update(Long roomId, RoomDTO roomDTO, List<MultipartFile> roomImages);
 
+    void deleteAllRoomImages(Long roomId);
+
+    public void deleteRoom(Long roomId);
+
+
 } 
     

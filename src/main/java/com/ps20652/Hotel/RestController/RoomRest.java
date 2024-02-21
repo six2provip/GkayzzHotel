@@ -88,5 +88,28 @@ public class RoomRest {
                 .body("Không thể cập nhật phòng. Vui lòng thử lại sau.");
         }
     }
+
+    @DeleteMapping("/{roomId}/images")
+    public ResponseEntity<String> deleteAllRoomImages(@PathVariable Long roomId) {
+        try {
+            roomService.deleteAllRoomImages(roomId);
+            return new ResponseEntity<>("Deleted all images of room with ID " + roomId, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Failed to delete images of room with ID " + roomId, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     
+
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity<String> deleteRoom(@PathVariable Long roomId) {
+        try {
+            roomService.deleteRoom(roomId);
+            return new ResponseEntity<>("Room with ID " + roomId + " has been deleted", HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Failed to delete room with ID " + roomId, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

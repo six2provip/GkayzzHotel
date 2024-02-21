@@ -204,4 +204,20 @@ public class RoomServerImpl implements RoomService {
         return updatedRoom;
     }
 
+    @Override
+    public void deleteAllRoomImages(Long roomId) {
+        Room room = roomDAO.findById(roomId).orElse(null);
+        if (room != null) {
+            // Xóa tất cả hình ảnh của phòng
+            room.getRoomImages().clear();
+            roomDAO.save(room);
+        }
+    }
+
+    @Override
+    public void deleteRoom(Long roomId) {
+        roomDAO.deleteById(roomId);
+    }
+
+
 }

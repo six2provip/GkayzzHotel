@@ -508,62 +508,64 @@
         }
     });
 });
+
 $(document).on('submit', 'form[id^="editRoomForm"]', function(event) {
     event.preventDefault(); // Ngăn chặn việc gửi form theo cách truyền thống
 
     var form = $(this); // Chọn form hiện tại được submit
     var roomId = form.find('.editRoomId').val(); // Lấy roomId từ trường ẩn trong form
-    var updatedRoom = { 
-        // Tạo đối tượng updatedRoom từ các giá trị trong form
-        roomNumber: form.find('.editRoomNumber').val(),
-        price: form.find('.editPrice').val(),
-        status: form.find('.editStatus').val(),
-        roomType: {
-            typeId: form.find('.editRoomTypeSelect').val()
-        }
-    };
-    form.find('.editRoomImagesInput' + roomId).on('change', function (e) {
-    var imagesContainer = form.find('.editRoomImagesContainer' + roomId);
-    imagesContainer.empty(); // Xóa hình ảnh cũ trước khi thêm hình ảnh mới
+    // var updatedRoom = { 
+    //     // Tạo đối tượng updatedRoom từ các giá trị trong form
+    //     roomNumber: form.find('.editRoomNumber').val(),
+    //     price: form.find('.editPrice').val(),
+    //     status: form.find('.editStatus').val(),
+    //     roomType: {
+    //         typeId: form.find('.editRoomTypeSelect').val()
+    //     }
+    // };
+    
+    // Tạo formData để gửi dữ liệu form và hình ảnh
+    // var formData = new FormData(form[0]);
+    var formData = new FormData();
 
-    var files = e.target.files;
-    for (var i = 0; i < files.length; i++) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            imagesContainer.append('<img style="width:100px;height:100px;" class="img-thumbnail m-2" src="' + e.target.result + '" alt="Room Image">');
-        }
-        reader.readAsDataURL(files[i]);
-    }
-});
+    var roomImages = $('.editRoomImagesInput' + roomId)[0].files;
 
+    for (var i = 0; i < roomImages.length; i++) {
+        formData.append('roomImages', roomImages[i]);
+   }
+   formData.append('roomNumber', form.find('.editRoomNumber').val());
+   formData.append('roomType', form.find('.editRoomTypeSelect').val());
+   formData.append('price', form.find('.editPrice').val());
+   formData.append('status', form.find('.editStatus').val());
+    
     // Gửi request PUT đến API
     $.ajax({
         url: '/api/room/' + roomId,
         type: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(updatedRoom),
+        contentType: false,
+        processData: false,
+        data: formData,
         success: function(response) {
             // Xử lý khi cập nhật thành công
             console.log('Room updated successfully:', response);
             form.closest('.modal').modal('hide'); // Đóng modal sau khi cập nhật thành công
             // Thực hiện các hành động khác (nếu cần)
-            successTitle.textContent = 'Tạo phòng thành công!';
-                                        successContent.textContent = 'Phòng ' + form.find('.editRoomNumber').val() +
-                                            ' đã cập nhật thành công';
-                                        successMessage.classList.add('active');
-                                        successMessage.classList.remove('d-none');
-                                        setTimeout(function () {
-                                            successMessage.classList.remove(
-                                                'active');
-                                        }, 3000);
+            successTitle.textContent = 'Cập nhật thành công!';
+            successContent.textContent = 'Phòng ' + form.find('.editRoomNumber').val() +
+                ' đã cập nhật thành công';
+            successMessage.classList.add('active');
+            successMessage.classList.remove('d-none');
+            setTimeout(function () {
+                successMessage.classList.remove(
+                    'active');
+            }, 3000);
 
-                                        setTimeout(function () {
-                                            successMessage.classList.add('d-none');
-                                        }, 3500);
+            setTimeout(function () {
+                successMessage.classList.add('d-none');
+            }, 3500);
 
-                                        // Sau khi tạo thành công, lấy và hiển thị các phòng đã cập nhật
-
-                                        getAndDisplayRooms(currentPage);
+            // Sau khi tạo thành công, lấy và hiển thị các phòng đã cập nhật
+            getAndDisplayRooms(currentPage);
         },
         error: function(xhr, status, error) {
             // Xử lý khi có lỗi xảy ra
@@ -573,53 +575,169 @@ $(document).on('submit', 'form[id^="editRoomForm"]', function(event) {
     });
 });
 
+$(document).on('click', '.delete-all-images', function() {
+    var roomId = $(this).data('room-id');
+    var imagesContainer = $('.editRoomImagesContainer' + roomId);
+    
+    // Gửi yêu cầu DELETE đến API để xóa tất cả hình ảnh của phòng
+    $.ajax({
+        url: '/api/room/' + roomId + '/images',
+        type: 'DELETE',
+        success: function(response) {
+            // Xử lý khi xóa thành công
+    
+            imagesContainer.empty(); // Xóa tất cả hình ảnh khỏi container
+            console.log('Deleted all images of room successfully:', response);
+            // Thực hiện các hành động khác (nếu cần)
+        },
+        error: function(xhr, status, error) {
+            // Xử lý khi có lỗi xảy ra
+            console.error('Failed to delete images of room:', error);
+            // Hiển thị thông báo lỗi cho người dùng (nếu cần)
+        }
+    });
+});
 
+// $(document).on('click', '.delete-room', function() {
+//     var roomId = $(this).data('room-id');
+    
+//     // Gửi yêu cầu DELETE đến API để xóa phòng
+//     $.ajax({
+//         url: '/api/room/' + roomId,
+//         type: 'DELETE',
+//         success: function(response) {
+//             // Xử lý khi xóa phòng thành công
+//             getAndDisplayRooms(currentPage);
+//             console.log(response);
+//             // Thực hiện các hành động khác sau khi xóa phòng (nếu cần)
+//         },
+//         error: function(xhr, status, error) {
+//             // Xử lý khi xảy ra lỗi trong quá trình xóa phòng
+//             console.error('Failed to delete room:', error);
+//             // Hiển thị thông báo lỗi cho người dùng (nếu cần)
+//         }
+//     });
+// });
+$(document).on('click', '.delete-room', function() {
+    var roomId = $(this).data('room-id');
+    var roomNumber = $(this).data('room-number');
+    
+    // Gán roomId vào modal xác nhận xóa
+    $('#deleteRoomId').val(roomId);
+    $('#deleteRoomNumber').val(roomNumber);
+});
 
+$(document).on('click', '#confirmDeleteRoom', function() {
+    var roomId = $('#deleteRoomId').val();
+    var roomNumber = $('#deleteRoomNumber').val();
+    
+    // Gửi yêu cầu DELETE đến API để xóa phòng
+    $.ajax({
+        url: '/api/room/' + roomId,
+        type: 'DELETE',
+        success: function(response) {
+            // Xử lý khi xóa phòng thành công
+            getAndDisplayRooms(currentPage);
+            console.log(response);
+            // Đóng modal sau khi xóa
+            $('#deleteModal' + roomId).modal('hide');
+
+            successTitle.textContent = 'Xóa phòng thành công!';
+            successContent.textContent = 'Đã xóa phòng ' + roomNumber + ' thành công.';
+            successMessage.classList.add('active');
+            successMessage.classList.remove('d-none');
+            setTimeout(function () {
+                successMessage.classList.remove(
+                    'active');
+            }, 3000);
+
+            setTimeout(function () {
+                successMessage.classList.add('d-none');
+            }, 3500);
+
+            // Thực hiện các hành động khác sau khi xóa phòng (nếu cần)
+        },
+        error: function(xhr, status, error) {
+            // Xử lý khi xảy ra lỗi trong quá trình xóa phòng
+            console.error('Failed to delete room:', error);
+            // Hiển thị thông báo lỗi cho người dùng (nếu cần)
+        }
+    });
+});
 
 
                             // Function to display rooms
                             function displayRooms(rooms) {
-                                var roomListContainer = $('#roomList');
-                                roomListContainer.empty();
+    var roomListTableBody = $('#roomListTableBody');
+    roomListTableBody.empty();
 
-                                // Loop through the list of rooms and add information to the web page
-                                $.each(rooms, function (index, room) {
-                                    var editModalId = "editModal" + room.roomId;
-                                    var backgroundColor = room.status === 'Còn phòng' ? '#ADDDCE' : room
-                                        .status === 'Hết phòng' ? '#ffcccc' : '';
-                                 
-                                   
-                                    var firstImage = room.roomImages.length > 0 ? room.roomImages[0]
-                                        .imageUrl : '/assets/images/default-room-image.jpg';
-                                    var roomItem = `
-                                    <div class="col-lg-4 col-md-6">
-    <div class="item">
+    // Loop through the list of rooms and add information to the web page
+    $.each(rooms, function (index, room) {
+        var editModalId = "editModal" + room.roomId;
+        var deleteModalId = "deleteModal" + room.roomId;
+        var backgroundColor = room.status === 'Còn phòng' ? '#ADDDCE' : room.status === 'Hết phòng' ? '#ffcccc' : '';
+
+        var firstImage = room.roomImages.length > 0 ? room.roomImages[0].imageUrl : '/assets/images/default-room-image.jpg';
+
+        var roomItem = `
+        <tr>
+    <td style="width: 120px;">
         <div class="image-container">
             <a href="property-details.html">
-                <img class="room-image" src="/assets/images/${firstImage}?timestamp=${new Date().getTime()}" alt="Room Image">
+                <img class="room-image" src="/assets/images/${firstImage}?timestamp=${new Date().getTime()}" alt="Room Image" style="max-width: 100px; max-height: 100px;">
             </a>
-            <div class="hover-buttons">
-    
-                <button style="width:50%;border-radius: 1px; " class="btn btn-danger btn-sm delete-room" data-room-id="${room.roomId}">
-                <i class="fas fa-trash-alt"></i>
+        </div>
+    </td>
+    <td class="align-middle">${room.roomNumber}</td>
+    <td class="align-middle">${room.price}</td>
+    <td class="align-middle">
+        <span style="color: ${room.status === 'Còn phòng' ? 'green' : 'red'}" class="align-middle">${room.status}</span>
+    </td>
+    <td class="align-middle">${room.roomType.name}</td>
+    <td class="align-middle">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-danger btn-sm delete-room mr-2" data-bs-toggle="modal" data-bs-target="#${deleteModalId}" data-room-id="${room.roomId}" data-room-number="${room.roomNumber}">
+                <i class="fas fa-trash-alt"></i> Xóa
             </button>
-            <button style="width:50%;border-radius: 1px; " class="btn btn-primary btn-sm edit-room" data-bs-toggle="modal" data-bs-target="#${editModalId}" data-room-id="${room.roomId}" data-bs-whatever="@mdo">
-                <i class="fas fa-edit"></i>
+            <button type="button" class="btn btn-primary btn-sm edit-room" data-bs-toggle="modal" data-bs-target="#${editModalId}" data-room-id="${room.roomId}" data-bs-whatever="@mdo">
+                <i class="fas fa-edit"></i> Chỉnh sửa
             </button>
+        </div>
+    </td>
+</tr>
+
+        `;
+
+        // Add room to the list
+        roomListTableBody.append(roomItem);
+
+        // Add the delete modal for the current room
+        var deleteModal = `
+            <div class="modal fade" id="${deleteModalId}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning text-white">
+                            <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Bạn có chắc chắn muốn xóa phòng ${room.roomNumber} không?</p>
+                            <input type="hidden" id="deleteRoomId">
+                            <input type="hidden" id="deleteRoomNumber">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="button" class="btn btn-danger" id="confirmDeleteRoom">Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="details">
-            <span class="category" style="background-color: #a0d8e2;">${room.roomType.name}</span>
-            <span class="category" style="background-color: ${backgroundColor};">${room.status}</span>
-            <h6 style="font-size: 17px; color: black;">Phòng: ${room.roomNumber}</h6>
-        </div>
-    </div>
-</div>
+        `;
+        $('body').append(deleteModal);
 
-
-
-
-
+        // Add the edit modal for the current room
+        var editModal = `
+           
 <div class="modal fade" id="${editModalId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -629,7 +747,7 @@ $(document).on('submit', 'form[id^="editRoomForm"]', function(event) {
             </div>
             <div class="modal-body">
                 <form id="editRoomForm" method="put" enctype="multipart/form-data">
-                    <input type="text" class="editRoomId" id="editRoomId" name="editRoomId">
+                    <input type="hidden" class="editRoomId" id="editRoomId" name="editRoomId">
                     <div class="mb-3 row">
                         <label for="editRoomNumber" class="col-sm-2 col-form-label">Phòng</label>
                         <div class="col-sm-10">
@@ -662,6 +780,7 @@ $(document).on('submit', 'form[id^="editRoomForm"]', function(event) {
     <div class="col-sm-10">
         <div id="editRoomImagesContainer${room.roomId}" class="d-flex flex-wrap editRoomImagesContainer${room.roomId}"></div>
         <input type="file" id="editRoomImagesInput${room.roomId}" class="form-control editRoomImagesInput${room.roomId}" accept="image/*" multiple>
+        <button type="button" class="btn btn-danger delete-all-images" data-room-id="${room.roomId}">Xóa tất cả hình ảnh</button>
     </div>
 </div>
                     <div class="modal-footer">
@@ -673,12 +792,11 @@ $(document).on('submit', 'form[id^="editRoomForm"]', function(event) {
         </div>
     </div>
 </div>
-                `;
+        `;
+        $('body').append(editModal);
+    });
+}
 
-                                    // Add room to the list
-                                    roomListContainer.append(roomItem);
-                                });
-                            }
 
                             function displayPagination(totalPages, currentPage) {
                                 var paginationContainer = $('#pagination');
@@ -1020,15 +1138,28 @@ $(document).on('submit', 'form[id^="editRoomForm"]', function(event) {
                 <script>
 
                 </script>
+<div class="properties">
+    <div class="container">
+        
+<table id="roomListTable" class="table table-bordered table-striped" style="background-color: #ffffff;">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Hình ảnh</th>
+            <th scope="col">Số phòng</th>
+            <th scope="col">Giá</th>
+            <th scope="col">Trạng thái</th>
+            <th scope="col">Loại phòng</th>
+            <th scope="col">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody id="roomListTableBody">
+        <!-- Dữ liệu phòng sẽ được thêm vào đây từ JavaScript -->
+    </tbody>
+</table>
+    </div>
+</div>
 
-                <div class="properties">
 
-                    <div class="container">
-                        <div class="row" id="roomList">
-                            <!-- Các phòng sẽ được thêm vào đây từ API -->
-                        </div>
-                    </div>
-                </div>
 
                 <div class="row justify-content-center">
                     <div id="pagination" class="mt-3"></div>
